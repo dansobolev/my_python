@@ -9,13 +9,13 @@ for i in contents.split():
 
 max1 = max(lst)
 min1 = min(lst)
-mean1 = sum(lst) / len(lst)
+mean1 = round(sum(lst) / len(lst),2)
 
 rare = 0
 for i in lst:
     if lst.count(i) == 1:
         rare += 1
-print("Максимальная температура: ", max1, "Минимальная температура", min1, "Средняя температура: ", int(mean1), "Количество уникальных температур: ", rare, sep="\n")
+print("Максимальная температура: ", max1, "Минимальная температура", min1, "Средняя температура: ", mean1, "Количество уникальных температур: ", rare, sep="\n")
 
 
 
