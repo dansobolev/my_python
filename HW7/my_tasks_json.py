@@ -6,7 +6,7 @@ def todo_list():
 
 def writer(something):
     try:
-        with open("todo_list.json", 'w') as file_write:
+        with open("todo_list.json", 'w', encoding='windows-1251') as file_write:
             json.dump(something, file_write, sort_keys=False, ensure_ascii=False)
     except Exception as e:
         print(e)
@@ -16,7 +16,7 @@ a = True
 lst = []
 
 try:
-    with open("todo_list.json", 'r', encoding='utf-8') as json_file:
+    with open("todo_list.json", 'r', encoding='cp1251') as json_file:
         contents = json.load(json_file)
     for todo in contents:
         print("Задача:", todo["task"])
