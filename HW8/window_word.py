@@ -16,6 +16,10 @@ def random_choice_func():
     except Exception as ex:
         print(ex)
 
+def exit():
+    global window
+    window.destroy()
+
 window = tkinter.Tk()
 
 
@@ -48,7 +52,7 @@ label4.pack()
 button1 = tkinter.Button(frame, text="Готово!", command=random_choice_func)
 button1.pack()
 
-button2 = tkinter.Button(frame,text="Выход")
+button2 = tkinter.Button(frame, text="Выход", command=exit)
 button2.pack()
 
 random_word()
