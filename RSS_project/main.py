@@ -3,8 +3,6 @@ import requests
 from bs4 import BeautifulSoup
 import re
 from nltk.stem.snowball import SnowballStemmer
-import json
-import time
 
 stemmer = SnowballStemmer("russian")
 
@@ -12,6 +10,11 @@ def cleanhtml(raw_html):
     cleanr = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
     cleantext = re.sub(cleanr, '', raw_html)
     return cleantext
+
+
+@bot.message_handler(commands=['donate'])
+def donate(message):
+    bot.send_message(message.chat.id, "На поддержку проекта")
 
 
 @bot.message_handler(commands=['start'])
@@ -44,10 +47,14 @@ def start_message(message):
     a = 0
     lst_frequency = []
     count = 0
+
+    global k, url
     try:
-        global k, url
         if k == 0:
-            url = dict_tape[message.text]
+            if message.text in dict_tape:
+                url = dict_tape[message.text]
+            else:
+                url = message.text
             bot.send_message(message.chat.id, "Сообщите пару ключевых слов: " +
                              "\n\n" +
                              "например: Трамп, Зеленский, сообщил")
@@ -83,6 +90,7 @@ def start_message(message):
                 bot.send_message(message.chat.id, "Нажмите /start для нового поиска новостей")
     except:
         bot.send_message(message.chat.id, "Произошла ошибка. Возможно вы ввели неверные данные. "
-                                          "Повторите попытку позже.")
+                                              "Повторите попытку позже.")
+
 
 bot.polling()
