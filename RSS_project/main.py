@@ -3,6 +3,8 @@ import requests
 from bs4 import BeautifulSoup
 import re
 from nltk.stem.snowball import SnowballStemmer
+import time
+import psycopg2
 
 stemmer = SnowballStemmer("russian")
 
@@ -10,11 +12,6 @@ def cleanhtml(raw_html):
     cleanr = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
     cleantext = re.sub(cleanr, '', raw_html)
     return cleantext
-
-
-@bot.message_handler(commands=['donate'])
-def donate(message):
-    bot.send_message(message.chat.id, "На поддержку проекта")
 
 
 @bot.message_handler(commands=['start'])
@@ -47,9 +44,8 @@ def start_message(message):
     a = 0
     lst_frequency = []
     count = 0
-
-    global k, url
     try:
+        global k, url
         if k == 0:
             if message.text in dict_tape:
                 url = dict_tape[message.text]
@@ -86,11 +82,24 @@ def start_message(message):
                 bot.send_message(message.chat.id, "К сожалению, по данному запросу новости отсутствуют")
             k = 0
 
+            values = {
+                "id": message.from_user.id,
+                "time": time.ctime(),
+                "url": url,
+                "key_words": key_words
+            }
+
+            cur = con.cursor()
+            cur.execute(
+                "INSERT INTO USERS_DATA (USER_ID, TIME, URL, KEY_WORDS) VALUES (%(id)s, %(time)s, %(url)s, %(key_words)s)",
+                values)
+            con.commit()
+
             if count == len(items):
                 bot.send_message(message.chat.id, "Нажмите /start для нового поиска новостей")
     except:
         bot.send_message(message.chat.id, "Произошла ошибка. Возможно вы ввели неверные данные. "
-                                              "Повторите попытку позже.")
+                                            "Повторите попытку позже.")
 
 
 bot.polling()
